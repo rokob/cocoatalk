@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'quad_tree/version'
+require 'cocoatalk/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "quad_tree"
-  gem.version       = QuadTree::VERSION
+  gem.name          = "cocoatalk"
+  gem.version       = Cocoatalk::VERSION
   gem.authors       = ["Andrew Ledvina"]
   gem.email         = ["wvvwwvw@gmail.com"]
-  gem.description   = %q{A QuadTree}
-  gem.summary       = %q{Just a quad tree}
-  gem.homepage      = "https://github.com/rokob/quad_tree"
+  gem.description   = %q{Cocoatalk -- a nifty code generator}
+  gem.summary       = %q{This is the summary for Cocoatalk}
+  gem.homepage      = "https://github.com/rokob/cocoatalk"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

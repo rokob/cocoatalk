@@ -1,3 +1,4 @@
+require 'bundler/gem_tasks'
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
@@ -7,7 +8,7 @@ Rake::TestTask.new do |t|
 end
 
 namespace :generate do
-  require File.expand_path('../lib/generator', __FILE__)
+  require File.expand_path('../lib/cocoatalk/generator', __FILE__)
   task :default do
     options = {output: 'output', input: 'test/files/test-schema.rb'}
     Generator::Generator.new.generate(options)
@@ -19,3 +20,4 @@ namespace :generate do
 end
 
 task :generate => ["generate:default"]
+task :default => :test

@@ -1,6 +1,6 @@
 require 'digest'
 
-module Generator
+module Cocoatalk
   class Generator
     def self.version
       "#{Table.version}::0.0.1"
