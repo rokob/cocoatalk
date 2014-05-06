@@ -1,0 +1,66 @@
+<%= signature %>
+
+#include "<%= name %>.h"
+
+@implementation <%= name %>
+
+<% properties.each_with_index do |property, idx| -%>
+<% if idx == 0 -%>
+- (id)initWith<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>
+<% else -%>
+    <%= property.name %>:(<%= property.type %>)<%= property.name %>
+<% end -%>
+<% end -%>
+{
+  if ((self = [super init])) {
+<% properties.each do |property| -%>
+    _<%= property.name %> = <%= property.name -%>;
+<% end -%>
+  }
+  return self;
+}
+
++ (id)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block
+{
+  <%= mutableName %>* mutableObject = [[<%= mutableName %> alloc] initWithImmutableObject:object];
+  if (block) {
+    block(mutableObject);
+  }
+  return [mutableObject makeImmutable];
+}
+
++ (id)build:(void(^)(<%= mutableName %> *))block
+{
+  <%= mutableName %>* mutableObject = [[<%= mutableName %> alloc] init];
+  return [self buildWithObject:mutableObject block:block];
+}
+
+@end
+
+@implementation <%= mutableName %>
+
+- (id)initWithImmutableObject:(<%= name %> *)immutableObject
+{
+  if ((self = [super init])) {
+  <% properties.each do |property| -%>
+    _<%= property.name -%> = immutableObject.<%= property.name %>;
+  <% end %>
+  }
+  return self;
+}
+
+- (<%= name %> *)makeImmutable;
+{
+  <%= name %>* object = [[<%= name %> alloc]
+<% properties.each_with_index do |property, idx| -%>
+<% if idx == 0 -%>
+    initWith<%= upcase_first(property.name) %>:_<%= property.name -%>
+  <% else -%>
+    <%= property.name %>:_<%= property.name -%>
+  <% end %>
+<% end %>
+  ];
+  return object;
+}
+
+@end

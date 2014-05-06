@@ -1,0 +1,25 @@
+<%= signature %>
+
+#include <Foundation/Foundation.h>
+
+@class <%= mutableName %>;
+
+@interface <%= name %> : NSObject
+
++ (instancetype)build:(void(^)(<%= mutableName %> *))block;
++ (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block;
+
+<% properties.each do |property| %>
+@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;<% end %>
+
+@end
+
+@interface <%= mutableName %> : NSObject
+
+- (instancetype)initWithImmutableObject:(<%= name %> *)immutableObject;
+- (<%= name %> *)makeImmutable;
+
+<% for property in properties %>
+@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;<% end %>
+
+@end
