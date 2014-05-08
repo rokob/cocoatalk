@@ -42,9 +42,9 @@
 - (id)initWithImmutableObject:(<%= name %> *)immutableObject
 {
   if ((self = [super init])) {
-  <% properties.each do |property| -%>
+<% properties.each do |property| -%>
     _<%= property.name -%> = immutableObject.<%= property.name %>;
-  <% end %>
+<% end -%>
   }
   return self;
 }
@@ -58,9 +58,32 @@
   <% else -%>
     <%= property.name %>:_<%= property.name -%>
   <% end %>
-<% end %>
+<% end -%>
   ];
   return object;
+}
+
+- (BOOL)isEqual:(id)other
+{
+  if (self == other) {
+    return YES;
+  }
+  if (![other isKindOfClass:[self class]]) {
+    return NO;
+  }
+  return (<%= properties.map {|p| p.equality_string("other") }.join(" &&\n    ") %>);
+}
+
+- (NSUInteger)hash
+{
+  NSUInteger prime = 31;
+  NSUInteger result = 1;
+
+<% properties.each do |property| -%>
+  result = prime * result + <%= property.hash_string %>;
+<% end -%>
+
+  return result;
 }
 
 @end

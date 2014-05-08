@@ -9,8 +9,9 @@
 + (instancetype)build:(void(^)(<%= mutableName %> *))block;
 + (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block;
 
-<% properties.each do |property| %>
-@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;<% end %>
+<% properties.each do |property| -%>
+@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+<% end -%>
 
 @end
 
@@ -19,7 +20,8 @@
 - (instancetype)initWithImmutableObject:(<%= name %> *)immutableObject;
 - (<%= name %> *)makeImmutable;
 
-<% for property in properties %>
-@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;<% end %>
+<% for property in properties -%>
+@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+<% end -%>
 
 @end
