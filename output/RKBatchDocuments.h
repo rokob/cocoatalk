@@ -1,4 +1,4 @@
-/// @generated @signature<<0865fbe2240decddb9298eb309d21373>>
+/// @generated @signature<<13f589c3d1a6354bc7c6062b18b5e48d>>
 
 #include <Foundation/Foundation.h>
 
@@ -6,30 +6,30 @@
 
 @interface RKBatchDocuments : NSObject
 
-+ (instancetype)build:(void(^)(RKMutableBatchDocuments*))block;
-+ (instancetype)buildWithObject:(RKBatchDocuments*)object block:(void(^)(RKMutableBatchDocuments*))block;
++ (instancetype)build:(void(^)(RKMutableBatchDocuments *))block;
++ (instancetype)buildWithObject:(RKBatchDocuments *)object block:(void(^)(RKMutableBatchDocuments *))block;
 
-@property (nonatomic, readonly, assign) NSInteger batchId;
-@property (nonatomic, readonly, assign) NSInteger documentId;
+@property (nonatomic, readonly, assign) NSInteger batch_id;
+@property (nonatomic, readonly, assign) NSInteger document_id;
 @property (nonatomic, readonly, copy) NSString* status;
-@property (nonatomic, readonly, assign) NSTimeInterval createdAt;
-@property (nonatomic, readonly, assign) NSTimeInterval updatedAt;
+@property (nonatomic, readonly, assign) NSTimeInterval created_at;
+@property (nonatomic, readonly, assign) NSTimeInterval updated_at;
 @property (nonatomic, readonly, copy) NSString* name;
-@property (nonatomic, readonly, assign) NSTimeInterval deletedAt;
+@property (nonatomic, readonly, assign) NSTimeInterval deleted_at;
 
 @end
 
 @interface RKMutableBatchDocuments : NSObject
 
 - (instancetype)initWithImmutableObject:(RKBatchDocuments *)immutableObject;
-- (RKBatchDocuments*)makeImmutable;
+- (RKBatchDocuments *)makeImmutable;
 
-@property (nonatomic, readwrite, assign) NSInteger batchId;
-@property (nonatomic, readwrite, assign) NSInteger documentId;
+@property (nonatomic, readwrite, assign) NSInteger batch_id;
+@property (nonatomic, readwrite, assign) NSInteger document_id;
 @property (nonatomic, readwrite, copy) NSString* status;
-@property (nonatomic, readwrite, assign) NSTimeInterval createdAt;
-@property (nonatomic, readwrite, assign) NSTimeInterval updatedAt;
+@property (nonatomic, readwrite, assign) NSTimeInterval created_at;
+@property (nonatomic, readwrite, assign) NSTimeInterval updated_at;
 @property (nonatomic, readwrite, copy) NSString* name;
-@property (nonatomic, readwrite, assign) NSTimeInterval deletedAt;
+@property (nonatomic, readwrite, assign) NSTimeInterval deleted_at;
 
 @end

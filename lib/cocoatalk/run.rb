@@ -13,4 +13,4 @@ end.parse!
 options[:input] = ARGV.first || 'test/files/test-schema.rb'
 
 puts "Generating models with schema: #{options[:input]}"
-Generator::Generator.new.generate(options)
+Cocoatalk::Generator.new.generate(options)

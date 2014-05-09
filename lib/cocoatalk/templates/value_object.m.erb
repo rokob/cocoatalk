@@ -14,7 +14,7 @@
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-    _<%= property.name %> = <%= property.name -%>;
+    self.<%= property.name %> = <%= property.name -%>;
 <% end -%>
   }
   return self;
@@ -43,7 +43,7 @@
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-    _<%= property.name -%> = immutableObject.<%= property.name %>;
+    self.<%= property.name -%> = immutableObject.<%= property.name %>;
 <% end -%>
   }
   return self;
