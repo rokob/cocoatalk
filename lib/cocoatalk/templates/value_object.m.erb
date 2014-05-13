@@ -63,7 +63,7 @@
   return object;
 }
 
-- (BOOL)isEqual:(id)other
+- (BOOL)isEqual:(id)otherObj
 {
   if (self == other) {
     return YES;
@@ -71,6 +71,7 @@
   if (![other isKindOfClass:[self class]]) {
     return NO;
   }
+  <%= name %>* other = (<%= name %>*)otherObj;
   return (<%= properties.map {|p| p.equality_string("other") }.join(" &&\n    ") %>);
 }
 

@@ -26,9 +26,9 @@ module Cocoatalk
 
     def hash_string
       if @base_type.upcase == "BOOL" and @indirection == 0
-        "_#{@name} ? 1231 : 1237"
+        "(_#{@name} ? 1231 : 1237)"
       elsif @primative
-        "(NSUInteger)(_#{@name} ^ (_#{@name} >>> 32))"
+        "(NSUInteger)(_#{@name})"
       else
         "[_#{@name} hash]"
       end
