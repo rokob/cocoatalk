@@ -2,6 +2,10 @@
 
 #include "<%= name %>.h"
 
+<% properties.each do |property| -%>
+static NSString * const kCoderKey<%= property.name %> = @"<%= property.name %>";
+<% end -%>
+
 @implementation <%= name %>
 
 <% properties.each_with_index do |property, idx| -%>
@@ -35,6 +39,61 @@
   return [self buildWithObject:mutableObject block:block];
 }
 
+#pragma mark -
+#pragma mark Equality
+
+- (BOOL)isEqual:(id)otherObj
+{
+  if (self == other) {
+    return YES;
+  }
+  if (![other isKindOfClass:[self class]]) {
+    return NO;
+  }
+  <%= name %>* other = (<%= name %>*)otherObj;
+  return (<%= properties.map {|p| p.equality_string("other") }.join(" &&\n    ") %>);
+}
+
+- (NSUInteger)hash
+{
+  NSUInteger prime = 31;
+  NSUInteger result = 1;
+
+<% properties.each do |property| -%>
+  result = prime * result + <%= property.hash_string %>;
+<% end -%>
+
+  return result;
+}
+
+#pragma mark -
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  return self;
+}
+
+#pragma mark -
+#pragma mark NSCoding
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+  if ((self = [super init])) {
+<% properties.each do |property| -%>
+    _<%= property.name %> = [decoder decode<%= property.coder_type_string %>ForKey:kCoderKey<%= property.name %>];
+<% end -%>
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+<% properties.each do |property| -%>
+  [coder encode<%= property.coder_type_string %>:_<%= property.name %> forKey:kCoderKey<%= property.name %>];
+<% end -%>
+}
+
 @end
 
 @implementation <%= mutableName %>
@@ -61,30 +120,6 @@
 <% end -%>
   ];
   return object;
-}
-
-- (BOOL)isEqual:(id)otherObj
-{
-  if (self == other) {
-    return YES;
-  }
-  if (![other isKindOfClass:[self class]]) {
-    return NO;
-  }
-  <%= name %>* other = (<%= name %>*)otherObj;
-  return (<%= properties.map {|p| p.equality_string("other") }.join(" &&\n    ") %>);
-}
-
-- (NSUInteger)hash
-{
-  NSUInteger prime = 31;
-  NSUInteger result = 1;
-
-<% properties.each do |property| -%>
-  result = prime * result + <%= property.hash_string %>;
-<% end -%>
-
-  return result;
 }
 
 @end

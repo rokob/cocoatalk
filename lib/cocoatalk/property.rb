@@ -37,5 +37,19 @@ module Cocoatalk
     def primative
       @indirection == 0
     end
+
+    def coder_type_string
+      return "Object" unless @primative
+      case @base_type
+      when "NSInteger"
+        "Integer"
+      when "BOOL"
+        "Bool"
+      when "CGFloat"
+        "Float"
+      else
+        "Object" # this shouldn't happen
+      end
+    end
   end
 end

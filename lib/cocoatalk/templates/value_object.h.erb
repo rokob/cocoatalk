@@ -4,7 +4,7 @@
 
 @class <%= mutableName %>;
 
-@interface <%= name %> : NSObject
+@interface <%= name %> : NSObject <NSCopying, NSCoding>
 
 + (instancetype)build:(void(^)(<%= mutableName %> *))block;
 + (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block;

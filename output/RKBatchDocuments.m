@@ -2,6 +2,14 @@
 
 #include "RKBatchDocuments.h"
 
+static NSString * const kCoderKeybatch_id = @"batch_id";
+static NSString * const kCoderKeydocument_id = @"document_id";
+static NSString * const kCoderKeystatus = @"status";
+static NSString * const kCoderKeycreated_at = @"created_at";
+static NSString * const kCoderKeyupdated_at = @"updated_at";
+static NSString * const kCoderKeyname = @"name";
+static NSString * const kCoderKeydeleted_at = @"deleted_at";
+
 @implementation RKBatchDocuments
 
 - (id)initWithBatch_id:(NSInteger)batch_id
@@ -39,6 +47,79 @@
   return [self buildWithObject:mutableObject block:block];
 }
 
+#pragma mark -
+#pragma mark Equality
+
+- (BOOL)isEqual:(id)otherObj
+{
+  if (self == other) {
+    return YES;
+  }
+  if (![other isKindOfClass:[self class]]) {
+    return NO;
+  }
+  RKBatchDocuments* other = (RKBatchDocuments*)otherObj;
+  return (_batch_id==other->_batch_id &&
+    _document_id==other->_document_id &&
+    [_status isEqual:other->_status] &&
+    _created_at==other->_created_at &&
+    _updated_at==other->_updated_at &&
+    [_name isEqual:other->_name] &&
+    _deleted_at==other->_deleted_at);
+}
+
+- (NSUInteger)hash
+{
+  NSUInteger prime = 31;
+  NSUInteger result = 1;
+
+  result = prime * result + (NSUInteger)(_batch_id);
+  result = prime * result + (NSUInteger)(_document_id);
+  result = prime * result + [_status hash];
+  result = prime * result + (NSUInteger)(_created_at);
+  result = prime * result + (NSUInteger)(_updated_at);
+  result = prime * result + [_name hash];
+  result = prime * result + (NSUInteger)(_deleted_at);
+
+  return result;
+}
+
+#pragma mark -
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  return self;
+}
+
+#pragma mark -
+#pragma mark NSCoding
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+  if ((self = [super init])) {
+    _batch_id = [decoder decodeIntegerForKey:kCoderKeybatch_id];
+    _document_id = [decoder decodeIntegerForKey:kCoderKeydocument_id];
+    _status = [decoder decodeObjectForKey:kCoderKeystatus];
+    _created_at = [decoder decodeObjectForKey:kCoderKeycreated_at];
+    _updated_at = [decoder decodeObjectForKey:kCoderKeyupdated_at];
+    _name = [decoder decodeObjectForKey:kCoderKeyname];
+    _deleted_at = [decoder decodeObjectForKey:kCoderKeydeleted_at];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+  [coder encodeInteger:_batch_id forKey:kCoderKeybatch_id];
+  [coder encodeInteger:_document_id forKey:kCoderKeydocument_id];
+  [coder encodeObject:_status forKey:kCoderKeystatus];
+  [coder encodeObject:_created_at forKey:kCoderKeycreated_at];
+  [coder encodeObject:_updated_at forKey:kCoderKeyupdated_at];
+  [coder encodeObject:_name forKey:kCoderKeyname];
+  [coder encodeObject:_deleted_at forKey:kCoderKeydeleted_at];
+}
+
 @end
 
 @implementation RKMutableBatchDocuments
@@ -69,39 +150,6 @@
     deleted_at:_deleted_at  
   ];
   return object;
-}
-
-- (BOOL)isEqual:(id)other
-{
-  if (self == other) {
-    return YES;
-  }
-  if (![other isKindOfClass:[self class]]) {
-    return NO;
-  }
-  return (_batch_id==other->_batch_id &&
-    _document_id==other->_document_id &&
-    [_status isEqual:other->_status] &&
-    _created_at==other->_created_at &&
-    _updated_at==other->_updated_at &&
-    [_name isEqual:other->_name] &&
-    _deleted_at==other->_deleted_at);
-}
-
-- (NSUInteger)hash
-{
-  NSUInteger prime = 31;
-  NSUInteger result = 1;
-
-  result = prime * result + (NSUInteger)(_batch_id ^ (_batch_id >>> 32));
-  result = prime * result + (NSUInteger)(_document_id ^ (_document_id >>> 32));
-  result = prime * result + [_status hash];
-  result = prime * result + (NSUInteger)(_created_at ^ (_created_at >>> 32));
-  result = prime * result + (NSUInteger)(_updated_at ^ (_updated_at >>> 32));
-  result = prime * result + [_name hash];
-  result = prime * result + (NSUInteger)(_deleted_at ^ (_deleted_at >>> 32));
-
-  return result;
 }
 
 @end

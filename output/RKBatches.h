@@ -4,7 +4,7 @@
 
 @class RKMutableBatches;
 
-@interface RKBatches : NSObject
+@interface RKBatches : NSObject <NSCopying, NSCoding>
 
 + (instancetype)build:(void(^)(RKMutableBatches *))block;
 + (instancetype)buildWithObject:(RKBatches *)object block:(void(^)(RKMutableBatches *))block;

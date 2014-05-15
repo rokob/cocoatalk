@@ -2,6 +2,16 @@
 
 #include "RKBatches.h"
 
+static NSString * const kCoderKeyshipment_id = @"shipment_id";
+static NSString * const kCoderKeybatch_type = @"batch_type";
+static NSString * const kCoderKeyquantity = @"quantity";
+static NSString * const kCoderKeysort = @"sort";
+static NSString * const kCoderKeystatus = @"status";
+static NSString * const kCoderKeycreated_at = @"created_at";
+static NSString * const kCoderKeyupdated_at = @"updated_at";
+static NSString * const kCoderKeycustom_sort = @"custom_sort";
+static NSString * const kCoderKeydeleted_at = @"deleted_at";
+
 @implementation RKBatches
 
 - (id)initWithShipment_id:(NSInteger)shipment_id
@@ -43,6 +53,87 @@
   return [self buildWithObject:mutableObject block:block];
 }
 
+#pragma mark -
+#pragma mark Equality
+
+- (BOOL)isEqual:(id)otherObj
+{
+  if (self == other) {
+    return YES;
+  }
+  if (![other isKindOfClass:[self class]]) {
+    return NO;
+  }
+  RKBatches* other = (RKBatches*)otherObj;
+  return (_shipment_id==other->_shipment_id &&
+    [_batch_type isEqual:other->_batch_type] &&
+    _quantity==other->_quantity &&
+    _sort==other->_sort &&
+    [_status isEqual:other->_status] &&
+    _created_at==other->_created_at &&
+    _updated_at==other->_updated_at &&
+    _custom_sort==other->_custom_sort &&
+    _deleted_at==other->_deleted_at);
+}
+
+- (NSUInteger)hash
+{
+  NSUInteger prime = 31;
+  NSUInteger result = 1;
+
+  result = prime * result + (NSUInteger)(_shipment_id);
+  result = prime * result + [_batch_type hash];
+  result = prime * result + (NSUInteger)(_quantity);
+  result = prime * result + (NSUInteger)(_sort);
+  result = prime * result + [_status hash];
+  result = prime * result + (NSUInteger)(_created_at);
+  result = prime * result + (NSUInteger)(_updated_at);
+  result = prime * result + (NSUInteger)(_custom_sort);
+  result = prime * result + (NSUInteger)(_deleted_at);
+
+  return result;
+}
+
+#pragma mark -
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  return self;
+}
+
+#pragma mark -
+#pragma mark NSCoding
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+  if ((self = [super init])) {
+    _shipment_id = [decoder decodeIntegerForKey:kCoderKeyshipment_id];
+    _batch_type = [decoder decodeObjectForKey:kCoderKeybatch_type];
+    _quantity = [decoder decodeIntegerForKey:kCoderKeyquantity];
+    _sort = [decoder decodeIntegerForKey:kCoderKeysort];
+    _status = [decoder decodeObjectForKey:kCoderKeystatus];
+    _created_at = [decoder decodeObjectForKey:kCoderKeycreated_at];
+    _updated_at = [decoder decodeObjectForKey:kCoderKeyupdated_at];
+    _custom_sort = [decoder decodeIntegerForKey:kCoderKeycustom_sort];
+    _deleted_at = [decoder decodeObjectForKey:kCoderKeydeleted_at];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+  [coder encodeInteger:_shipment_id forKey:kCoderKeyshipment_id];
+  [coder encodeObject:_batch_type forKey:kCoderKeybatch_type];
+  [coder encodeInteger:_quantity forKey:kCoderKeyquantity];
+  [coder encodeInteger:_sort forKey:kCoderKeysort];
+  [coder encodeObject:_status forKey:kCoderKeystatus];
+  [coder encodeObject:_created_at forKey:kCoderKeycreated_at];
+  [coder encodeObject:_updated_at forKey:kCoderKeyupdated_at];
+  [coder encodeInteger:_custom_sort forKey:kCoderKeycustom_sort];
+  [coder encodeObject:_deleted_at forKey:kCoderKeydeleted_at];
+}
+
 @end
 
 @implementation RKMutableBatches
@@ -77,43 +168,6 @@
     deleted_at:_deleted_at  
   ];
   return object;
-}
-
-- (BOOL)isEqual:(id)other
-{
-  if (self == other) {
-    return YES;
-  }
-  if (![other isKindOfClass:[self class]]) {
-    return NO;
-  }
-  return (_shipment_id==other->_shipment_id &&
-    [_batch_type isEqual:other->_batch_type] &&
-    _quantity==other->_quantity &&
-    _sort==other->_sort &&
-    [_status isEqual:other->_status] &&
-    _created_at==other->_created_at &&
-    _updated_at==other->_updated_at &&
-    _custom_sort==other->_custom_sort &&
-    _deleted_at==other->_deleted_at);
-}
-
-- (NSUInteger)hash
-{
-  NSUInteger prime = 31;
-  NSUInteger result = 1;
-
-  result = prime * result + (NSUInteger)(_shipment_id ^ (_shipment_id >>> 32));
-  result = prime * result + [_batch_type hash];
-  result = prime * result + (NSUInteger)(_quantity ^ (_quantity >>> 32));
-  result = prime * result + (NSUInteger)(_sort ^ (_sort >>> 32));
-  result = prime * result + [_status hash];
-  result = prime * result + (NSUInteger)(_created_at ^ (_created_at >>> 32));
-  result = prime * result + (NSUInteger)(_updated_at ^ (_updated_at >>> 32));
-  result = prime * result + (NSUInteger)(_custom_sort ^ (_custom_sort >>> 32));
-  result = prime * result + (NSUInteger)(_deleted_at ^ (_deleted_at >>> 32));
-
-  return result;
 }
 
 @end

@@ -4,7 +4,7 @@
 
 @class RKMutableBatchDocuments;
 
-@interface RKBatchDocuments : NSObject
+@interface RKBatchDocuments : NSObject <NSCopying, NSCoding>
 
 + (instancetype)build:(void(^)(RKMutableBatchDocuments *))block;
 + (instancetype)buildWithObject:(RKBatchDocuments *)object block:(void(^)(RKMutableBatchDocuments *))block;
