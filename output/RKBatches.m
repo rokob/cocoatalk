@@ -1,56 +1,70 @@
-/// @generated @signature<<13f589c3d1a6354bc7c6062b18b5e48d>>
+/// @generated @signature<<508f181d851b0c6ca270b6f691fde89f>>
 
 #include "RKBatches.h"
 
-static NSString * const kCoderKeyshipment_id = @"shipment_id";
-static NSString * const kCoderKeybatch_type = @"batch_type";
-static NSString * const kCoderKeyquantity = @"quantity";
-static NSString * const kCoderKeysort = @"sort";
-static NSString * const kCoderKeystatus = @"status";
-static NSString * const kCoderKeycreated_at = @"created_at";
-static NSString * const kCoderKeyupdated_at = @"updated_at";
-static NSString * const kCoderKeycustom_sort = @"custom_sort";
-static NSString * const kCoderKeydeleted_at = @"deleted_at";
+static NSString * const kCoderKeyShipmentId = @"shipment_id";
+static NSString * const kCoderKeyBatchType = @"batch_type";
+static NSString * const kCoderKeyQuantity = @"quantity";
+static NSString * const kCoderKeySort = @"sort";
+static NSString * const kCoderKeyStatus = @"status";
+static NSString * const kCoderKeyCreatedAt = @"created_at";
+static NSString * const kCoderKeyUpdatedAt = @"updated_at";
+static NSString * const kCoderKeyCustomSort = @"custom_sort";
+static NSString * const kCoderKeyDeletedAt = @"deleted_at";
 
 @implementation RKBatches
 
-- (id)initWithShipment_id:(NSInteger)shipment_id
-    batch_type:(NSString*)batch_type
+- (id)initWithShipmentId:(NSInteger)shipmentId
+    batchType:(NSString*)batchType
     quantity:(NSInteger)quantity
     sort:(NSInteger)sort
     status:(NSString*)status
-    created_at:(NSTimeInterval)created_at
-    updated_at:(NSTimeInterval)updated_at
-    custom_sort:(NSInteger)custom_sort
-    deleted_at:(NSTimeInterval)deleted_at
+    createdAt:(NSTimeInterval)createdAt
+    updatedAt:(NSTimeInterval)updatedAt
+    customSort:(NSInteger)customSort
+    deletedAt:(NSTimeInterval)deletedAt
 {
   if ((self = [super init])) {
-    self.shipment_id = shipment_id;
-    self.batch_type = batch_type;
-    self.quantity = quantity;
-    self.sort = sort;
-    self.status = status;
-    self.created_at = created_at;
-    self.updated_at = updated_at;
-    self.custom_sort = custom_sort;
-    self.deleted_at = deleted_at;
+    _shipmentId = shipmentId;
+    _batchType = [batchType copy];
+    _quantity = quantity;
+    _sort = sort;
+    _status = [status copy];
+    _createdAt = createdAt;
+    _updatedAt = updatedAt;
+    _customSort = customSort;
+    _deletedAt = deletedAt;
   }
   return self;
 }
 
-+ (id)buildWithObject:(RKBatches *)object block:(void(^)(RKMutableBatches *))block
++ (id)buildWithObject:(RKBatches *)object block:(void(^)(id<RKBatchesConfiguration>))block
 {
-  RKMutableBatches* mutableObject = [[RKMutableBatches alloc] initWithImmutableObject:object];
-  if (block) {
-    block(mutableObject);
-  }
-  return [mutableObject makeImmutable];
+  id<RKBatchesConfiguration> configuration = [RKBatchesConfiguration configurationWithObject:object];
+  return [self buildWithConfiguration:configuration block:block];
 }
 
-+ (id)build:(void(^)(RKMutableBatches *))block
++ (id)build:(void(^)(id<RKBatchesConfiguration>))block
 {
-  RKMutableBatches* mutableObject = [[RKMutableBatches alloc] init];
-  return [self buildWithObject:mutableObject block:block];
+  id<RKBatchesConfiguration> configuration = [RKBatchesConfiguration defaultConfiguration];
+  return [self buildWithConfiguration:configuration block:block];
+}
+
++ (id)buildWithConfiguration:(id<RKBatchesConfiguration>)configuration block:(void(^)(id<RKBatchesConfiguration>))block
+{
+  if (block) {
+    block(configuration);
+  }
+  return [[self alloc] initWithShipmentId:configuration.shipmentId
+    batchType:configuration.batchType
+    quantity:configuration.quantity
+    sort:configuration.sort
+    status:configuration.status
+    createdAt:configuration.createdAt
+    updatedAt:configuration.updatedAt
+    customSort:configuration.customSort
+    deletedAt:configuration.deletedAt
+  ];
 }
 
 #pragma mark -
@@ -65,15 +79,15 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
     return NO;
   }
   RKBatches* other = (RKBatches*)otherObj;
-  return (_shipment_id==other->_shipment_id &&
-    [_batch_type isEqual:other->_batch_type] &&
+  return (_shipmentId==other->_shipmentId &&
+    (_batchType==other->_batchType || [_batchType isEqual:other->_batchType]) &&
     _quantity==other->_quantity &&
     _sort==other->_sort &&
-    [_status isEqual:other->_status] &&
-    _created_at==other->_created_at &&
-    _updated_at==other->_updated_at &&
-    _custom_sort==other->_custom_sort &&
-    _deleted_at==other->_deleted_at);
+    (_status==other->_status || [_status isEqual:other->_status]) &&
+    _createdAt==other->_createdAt &&
+    _updatedAt==other->_updatedAt &&
+    _customSort==other->_customSort &&
+    _deletedAt==other->_deletedAt);
 }
 
 - (NSUInteger)hash
@@ -81,15 +95,15 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
   NSUInteger prime = 31;
   NSUInteger result = 1;
 
-  result = prime * result + (NSUInteger)(_shipment_id);
-  result = prime * result + [_batch_type hash];
+  result = prime * result + (NSUInteger)(_shipmentId);
+  result = prime * result + [_batchType hash];
   result = prime * result + (NSUInteger)(_quantity);
   result = prime * result + (NSUInteger)(_sort);
   result = prime * result + [_status hash];
-  result = prime * result + (NSUInteger)(_created_at);
-  result = prime * result + (NSUInteger)(_updated_at);
-  result = prime * result + (NSUInteger)(_custom_sort);
-  result = prime * result + (NSUInteger)(_deleted_at);
+  result = prime * result + (NSUInteger)(_createdAt);
+  result = prime * result + (NSUInteger)(_updatedAt);
+  result = prime * result + (NSUInteger)(_customSort);
+  result = prime * result + (NSUInteger)(_deletedAt);
 
   return result;
 }
@@ -108,66 +122,71 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
 - (id)initWithCoder:(NSCoder *)decoder
 {
   if ((self = [super init])) {
-    _shipment_id = [decoder decodeIntegerForKey:kCoderKeyshipment_id];
-    _batch_type = [decoder decodeObjectForKey:kCoderKeybatch_type];
-    _quantity = [decoder decodeIntegerForKey:kCoderKeyquantity];
-    _sort = [decoder decodeIntegerForKey:kCoderKeysort];
-    _status = [decoder decodeObjectForKey:kCoderKeystatus];
-    _created_at = [decoder decodeObjectForKey:kCoderKeycreated_at];
-    _updated_at = [decoder decodeObjectForKey:kCoderKeyupdated_at];
-    _custom_sort = [decoder decodeIntegerForKey:kCoderKeycustom_sort];
-    _deleted_at = [decoder decodeObjectForKey:kCoderKeydeleted_at];
+    _shipmentId = [decoder decodeIntegerForKey:kCoderKeyShipmentId];
+    _batchType = [decoder decodeObjectForKey:kCoderKeyBatchType];
+    _quantity = [decoder decodeIntegerForKey:kCoderKeyQuantity];
+    _sort = [decoder decodeIntegerForKey:kCoderKeySort];
+    _status = [decoder decodeObjectForKey:kCoderKeyStatus];
+    _createdAt = [decoder decodeObjectForKey:kCoderKeyCreatedAt];
+    _updatedAt = [decoder decodeObjectForKey:kCoderKeyUpdatedAt];
+    _customSort = [decoder decodeIntegerForKey:kCoderKeyCustomSort];
+    _deletedAt = [decoder decodeObjectForKey:kCoderKeyDeletedAt];
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-  [coder encodeInteger:_shipment_id forKey:kCoderKeyshipment_id];
-  [coder encodeObject:_batch_type forKey:kCoderKeybatch_type];
-  [coder encodeInteger:_quantity forKey:kCoderKeyquantity];
-  [coder encodeInteger:_sort forKey:kCoderKeysort];
-  [coder encodeObject:_status forKey:kCoderKeystatus];
-  [coder encodeObject:_created_at forKey:kCoderKeycreated_at];
-  [coder encodeObject:_updated_at forKey:kCoderKeyupdated_at];
-  [coder encodeInteger:_custom_sort forKey:kCoderKeycustom_sort];
-  [coder encodeObject:_deleted_at forKey:kCoderKeydeleted_at];
+  [coder encodeInteger:_shipmentId forKey:kCoderKeyShipmentId];
+  [coder encodeObject:_batchType forKey:kCoderKeyBatchType];
+  [coder encodeInteger:_quantity forKey:kCoderKeyQuantity];
+  [coder encodeInteger:_sort forKey:kCoderKeySort];
+  [coder encodeObject:_status forKey:kCoderKeyStatus];
+  [coder encodeObject:_createdAt forKey:kCoderKeyCreatedAt];
+  [coder encodeObject:_updatedAt forKey:kCoderKeyUpdatedAt];
+  [coder encodeInteger:_customSort forKey:kCoderKeyCustomSort];
+  [coder encodeObject:_deletedAt forKey:kCoderKeyDeletedAt];
 }
 
 @end
 
-@implementation RKMutableBatches
+@interface RKBatchesConfiguration : NSObject <RKBatchesConfiguration>
 
-- (id)initWithImmutableObject:(RKBatches *)immutableObject
++ (instancetype)defaultConfiguration;
++ (instancetype)configurationWithObject:(RKBatches*)object;
+
+@property (nonatomic, readwrite, assign) NSInteger shipmentId;
+@property (nonatomic, readwrite, copy) NSString* batchType;
+@property (nonatomic, readwrite, assign) NSInteger quantity;
+@property (nonatomic, readwrite, assign) NSInteger sort;
+@property (nonatomic, readwrite, copy) NSString* status;
+@property (nonatomic, readwrite, assign) NSTimeInterval createdAt;
+@property (nonatomic, readwrite, assign) NSTimeInterval updatedAt;
+@property (nonatomic, readwrite, assign) NSInteger customSort;
+@property (nonatomic, readwrite, assign) NSTimeInterval deletedAt;
+
+@end
+
+@implementation RKBatchesConfiguration
+
++ (instancetype)defaultConfiguration
 {
-  if ((self = [super init])) {
-    self.shipment_id = immutableObject.shipment_id;
-    self.batch_type = immutableObject.batch_type;
-    self.quantity = immutableObject.quantity;
-    self.sort = immutableObject.sort;
-    self.status = immutableObject.status;
-    self.created_at = immutableObject.created_at;
-    self.updated_at = immutableObject.updated_at;
-    self.custom_sort = immutableObject.custom_sort;
-    self.deleted_at = immutableObject.deleted_at;
-  }
-  return self;
+  return [[self alloc] init];
 }
 
-- (RKBatches *)makeImmutable;
++ (instancetype)configurationWithObject:(RKBatches*)object
 {
-  RKBatches* object = [[RKBatches alloc]
-    initWithShipment_id:_shipment_id  
-    batch_type:_batch_type  
-    quantity:_quantity  
-    sort:_sort  
-    status:_status  
-    created_at:_created_at  
-    updated_at:_updated_at  
-    custom_sort:_custom_sort  
-    deleted_at:_deleted_at  
-  ];
-  return object;
+  RKBatchesConfiguration* config = [[self alloc] init];
+  config.shipmentId = object.shipmentId;
+  config.batchType = object.batchType;
+  config.quantity = object.quantity;
+  config.sort = object.sort;
+  config.status = object.status;
+  config.createdAt = object.createdAt;
+  config.updatedAt = object.updatedAt;
+  config.customSort = object.customSort;
+  config.deletedAt = object.deletedAt;
+  return config;
 }
 
 @end

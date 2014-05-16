@@ -3,40 +3,53 @@
 #include "<%= name %>.h"
 
 <% properties.each do |property| -%>
-static NSString * const kCoderKey<%= property.name %> = @"<%= property.name %>";
+static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %> = @"<%= property.name %>";
 <% end -%>
 
 @implementation <%= name %>
 
 <% properties.each_with_index do |property, idx| -%>
 <% if idx == 0 -%>
-- (id)initWith<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>
+- (id)initWith<%= snake2camel(upcase_first(property.name)) %>:(<%= property.type %>)<%= snake2camel(property.name) %>
 <% else -%>
-    <%= property.name %>:(<%= property.type %>)<%= property.name %>
+    <%= snake2camel(property.name) %>:(<%= property.type %>)<%= snake2camel(property.name) %>
 <% end -%>
 <% end -%>
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-    self.<%= property.name %> = <%= property.name -%>;
+<% setter_string = property.memory == "copy" ? "[#{snake2camel(property.name)} copy]" : snake2camel(property.name) -%>
+    _<%= snake2camel(property.name) %> = <%= setter_string -%>;
 <% end -%>
   }
   return self;
 }
 
-+ (id)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block
++ (id)buildWithObject:(<%= name %> *)object block:(void(^)(id<<%= name %>Configuration>))block
 {
-  <%= mutableName %>* mutableObject = [[<%= mutableName %> alloc] initWithImmutableObject:object];
-  if (block) {
-    block(mutableObject);
-  }
-  return [mutableObject makeImmutable];
+  id<<%= name %>Configuration> configuration = [<%= name %>Configuration configurationWithObject:object];
+  return [self buildWithConfiguration:configuration block:block];
 }
 
-+ (id)build:(void(^)(<%= mutableName %> *))block
++ (id)build:(void(^)(id<<%= name %>Configuration>))block
 {
-  <%= mutableName %>* mutableObject = [[<%= mutableName %> alloc] init];
-  return [self buildWithObject:mutableObject block:block];
+  id<<%= name %>Configuration> configuration = [<%= name %>Configuration defaultConfiguration];
+  return [self buildWithConfiguration:configuration block:block];
+}
+
++ (id)buildWithConfiguration:(id<<%= name %>Configuration>)configuration block:(void(^)(id<<%= name %>Configuration>))block
+{
+  if (block) {
+    block(configuration);
+  }
+<% properties.each_with_index do |property, idx| -%>
+<% if idx == 0 -%>
+  return [[self alloc] initWith<%= snake2camel(upcase_first(property.name)) %>:configuration.<%= snake2camel(property.name) %>
+<% else -%>
+    <%= snake2camel(property.name) %>:configuration.<%= snake2camel(property.name) %>
+<% end -%>
+<% end -%>
+  ];
 }
 
 #pragma mark -
@@ -81,7 +94,7 @@ static NSString * const kCoderKey<%= property.name %> = @"<%= property.name %>";
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-    _<%= property.name %> = [decoder decode<%= property.coder_type_string %>ForKey:kCoderKey<%= property.name %>];
+    _<%= snake2camel(property.name) %> = [decoder decode<%= property.coder_type_string %>ForKey:kCoderKey<%= snake2camel(upcase_first(property.name)) %>];
 <% end -%>
   }
   return self;
@@ -90,36 +103,37 @@ static NSString * const kCoderKey<%= property.name %> = @"<%= property.name %>";
 - (void)encodeWithCoder:(NSCoder *)coder
 {
 <% properties.each do |property| -%>
-  [coder encode<%= property.coder_type_string %>:_<%= property.name %> forKey:kCoderKey<%= property.name %>];
+  [coder encode<%= property.coder_type_string %>:_<%= snake2camel(property.name) %> forKey:kCoderKey<%= snake2camel(upcase_first(property.name)) %>];
 <% end -%>
 }
 
 @end
 
-@implementation <%= mutableName %>
+@interface <%= name %>Configuration : NSObject <<%= name %>Configuration>
 
-- (id)initWithImmutableObject:(<%= name %> *)immutableObject
-{
-  if ((self = [super init])) {
++ (instancetype)defaultConfiguration;
++ (instancetype)configurationWithObject:(<%= name %>*)object;
+
 <% properties.each do |property| -%>
-    self.<%= property.name -%> = immutableObject.<%= property.name %>;
+@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= snake2camel(property.name) %>;
 <% end -%>
-  }
-  return self;
+
+@end
+
+@implementation <%= name %>Configuration
+
++ (instancetype)defaultConfiguration
+{
+  return [[self alloc] init];
 }
 
-- (<%= name %> *)makeImmutable;
++ (instancetype)configurationWithObject:(<%= name %>*)object
 {
-  <%= name %>* object = [[<%= name %> alloc]
-<% properties.each_with_index do |property, idx| -%>
-<% if idx == 0 -%>
-    initWith<%= upcase_first(property.name) %>:_<%= property.name -%>
-  <% else -%>
-    <%= property.name %>:_<%= property.name -%>
-  <% end %>
+  <%= name %>Configuration* config = [[self alloc] init];
+<% properties.each do |property| -%>
+  config.<%= snake2camel(property.name) %> = object.<%= snake2camel(property.name) %>;
 <% end -%>
-  ];
-  return object;
+  return config;
 }
 
 @end

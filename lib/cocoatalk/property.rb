@@ -1,5 +1,9 @@
+require_relative 'execution_helpers'
+
 module Cocoatalk
   class Property
+    include ExecutionHelpers
+
     attr_reader :name, :memory, :primative
 
     def initialize(name, memory, base_type, primative=false, indirection=nil)
@@ -16,21 +20,21 @@ module Cocoatalk
 
     def equality_string(other)
       if @indirection == 0
-        "_#{@name}==#{other}->_#{@name}"
+        "_#{snake2camel(@name)}==#{other}->_#{snake2camel(@name)}"
       elsif @primative
-        "*_#{@name}==*(#{other}->_#{@name})"
+        "*_#{snake2camel(@name)}==*(#{other}->_#{snake2camel(@name)})"
       else
-        "[_#{@name} isEqual:#{other}->_#{@name}]"
+        "(_#{snake2camel(@name)}==#{other}->_#{snake2camel(@name)} || [_#{snake2camel(@name)} isEqual:#{other}->_#{snake2camel(@name)}])"
       end
     end
 
     def hash_string
       if @base_type.upcase == "BOOL" and @indirection == 0
-        "(_#{@name} ? 1231 : 1237)"
+        "(_#{snake2camel(@name)} ? 1231 : 1237)"
       elsif @primative
-        "(NSUInteger)(_#{@name})"
+        "(NSUInteger)(_#{snake2camel(@name)})"
       else
-        "[_#{@name} hash]"
+        "[_#{snake2camel(@name)} hash]"
       end
     end
 

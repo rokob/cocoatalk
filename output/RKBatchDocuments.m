@@ -1,50 +1,62 @@
-/// @generated @signature<<13f589c3d1a6354bc7c6062b18b5e48d>>
+/// @generated @signature<<508f181d851b0c6ca270b6f691fde89f>>
 
 #include "RKBatchDocuments.h"
 
-static NSString * const kCoderKeybatch_id = @"batch_id";
-static NSString * const kCoderKeydocument_id = @"document_id";
-static NSString * const kCoderKeystatus = @"status";
-static NSString * const kCoderKeycreated_at = @"created_at";
-static NSString * const kCoderKeyupdated_at = @"updated_at";
-static NSString * const kCoderKeyname = @"name";
-static NSString * const kCoderKeydeleted_at = @"deleted_at";
+static NSString * const kCoderKeyBatchId = @"batch_id";
+static NSString * const kCoderKeyDocumentId = @"document_id";
+static NSString * const kCoderKeyStatus = @"status";
+static NSString * const kCoderKeyCreatedAt = @"created_at";
+static NSString * const kCoderKeyUpdatedAt = @"updated_at";
+static NSString * const kCoderKeyName = @"name";
+static NSString * const kCoderKeyDeletedAt = @"deleted_at";
 
 @implementation RKBatchDocuments
 
-- (id)initWithBatch_id:(NSInteger)batch_id
-    document_id:(NSInteger)document_id
+- (id)initWithBatchId:(NSInteger)batchId
+    documentId:(NSInteger)documentId
     status:(NSString*)status
-    created_at:(NSTimeInterval)created_at
-    updated_at:(NSTimeInterval)updated_at
+    createdAt:(NSTimeInterval)createdAt
+    updatedAt:(NSTimeInterval)updatedAt
     name:(NSString*)name
-    deleted_at:(NSTimeInterval)deleted_at
+    deletedAt:(NSTimeInterval)deletedAt
 {
   if ((self = [super init])) {
-    self.batch_id = batch_id;
-    self.document_id = document_id;
-    self.status = status;
-    self.created_at = created_at;
-    self.updated_at = updated_at;
-    self.name = name;
-    self.deleted_at = deleted_at;
+    _batchId = batchId;
+    _documentId = documentId;
+    _status = [status copy];
+    _createdAt = createdAt;
+    _updatedAt = updatedAt;
+    _name = [name copy];
+    _deletedAt = deletedAt;
   }
   return self;
 }
 
-+ (id)buildWithObject:(RKBatchDocuments *)object block:(void(^)(RKMutableBatchDocuments *))block
++ (id)buildWithObject:(RKBatchDocuments *)object block:(void(^)(id<RKBatchDocumentsConfiguration>))block
 {
-  RKMutableBatchDocuments* mutableObject = [[RKMutableBatchDocuments alloc] initWithImmutableObject:object];
-  if (block) {
-    block(mutableObject);
-  }
-  return [mutableObject makeImmutable];
+  id<RKBatchDocumentsConfiguration> configuration = [RKBatchDocumentsConfiguration configurationWithObject:object];
+  return [self buildWithConfiguration:configuration block:block];
 }
 
-+ (id)build:(void(^)(RKMutableBatchDocuments *))block
++ (id)build:(void(^)(id<RKBatchDocumentsConfiguration>))block
 {
-  RKMutableBatchDocuments* mutableObject = [[RKMutableBatchDocuments alloc] init];
-  return [self buildWithObject:mutableObject block:block];
+  id<RKBatchDocumentsConfiguration> configuration = [RKBatchDocumentsConfiguration defaultConfiguration];
+  return [self buildWithConfiguration:configuration block:block];
+}
+
++ (id)buildWithConfiguration:(id<RKBatchDocumentsConfiguration>)configuration block:(void(^)(id<RKBatchDocumentsConfiguration>))block
+{
+  if (block) {
+    block(configuration);
+  }
+  return [[self alloc] initWithBatchId:configuration.batchId
+    documentId:configuration.documentId
+    status:configuration.status
+    createdAt:configuration.createdAt
+    updatedAt:configuration.updatedAt
+    name:configuration.name
+    deletedAt:configuration.deletedAt
+  ];
 }
 
 #pragma mark -
@@ -59,13 +71,13 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
     return NO;
   }
   RKBatchDocuments* other = (RKBatchDocuments*)otherObj;
-  return (_batch_id==other->_batch_id &&
-    _document_id==other->_document_id &&
-    [_status isEqual:other->_status] &&
-    _created_at==other->_created_at &&
-    _updated_at==other->_updated_at &&
-    [_name isEqual:other->_name] &&
-    _deleted_at==other->_deleted_at);
+  return (_batchId==other->_batchId &&
+    _documentId==other->_documentId &&
+    (_status==other->_status || [_status isEqual:other->_status]) &&
+    _createdAt==other->_createdAt &&
+    _updatedAt==other->_updatedAt &&
+    (_name==other->_name || [_name isEqual:other->_name]) &&
+    _deletedAt==other->_deletedAt);
 }
 
 - (NSUInteger)hash
@@ -73,13 +85,13 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
   NSUInteger prime = 31;
   NSUInteger result = 1;
 
-  result = prime * result + (NSUInteger)(_batch_id);
-  result = prime * result + (NSUInteger)(_document_id);
+  result = prime * result + (NSUInteger)(_batchId);
+  result = prime * result + (NSUInteger)(_documentId);
   result = prime * result + [_status hash];
-  result = prime * result + (NSUInteger)(_created_at);
-  result = prime * result + (NSUInteger)(_updated_at);
+  result = prime * result + (NSUInteger)(_createdAt);
+  result = prime * result + (NSUInteger)(_updatedAt);
   result = prime * result + [_name hash];
-  result = prime * result + (NSUInteger)(_deleted_at);
+  result = prime * result + (NSUInteger)(_deletedAt);
 
   return result;
 }
@@ -98,58 +110,63 @@ static NSString * const kCoderKeydeleted_at = @"deleted_at";
 - (id)initWithCoder:(NSCoder *)decoder
 {
   if ((self = [super init])) {
-    _batch_id = [decoder decodeIntegerForKey:kCoderKeybatch_id];
-    _document_id = [decoder decodeIntegerForKey:kCoderKeydocument_id];
-    _status = [decoder decodeObjectForKey:kCoderKeystatus];
-    _created_at = [decoder decodeObjectForKey:kCoderKeycreated_at];
-    _updated_at = [decoder decodeObjectForKey:kCoderKeyupdated_at];
-    _name = [decoder decodeObjectForKey:kCoderKeyname];
-    _deleted_at = [decoder decodeObjectForKey:kCoderKeydeleted_at];
+    _batchId = [decoder decodeIntegerForKey:kCoderKeyBatchId];
+    _documentId = [decoder decodeIntegerForKey:kCoderKeyDocumentId];
+    _status = [decoder decodeObjectForKey:kCoderKeyStatus];
+    _createdAt = [decoder decodeObjectForKey:kCoderKeyCreatedAt];
+    _updatedAt = [decoder decodeObjectForKey:kCoderKeyUpdatedAt];
+    _name = [decoder decodeObjectForKey:kCoderKeyName];
+    _deletedAt = [decoder decodeObjectForKey:kCoderKeyDeletedAt];
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-  [coder encodeInteger:_batch_id forKey:kCoderKeybatch_id];
-  [coder encodeInteger:_document_id forKey:kCoderKeydocument_id];
-  [coder encodeObject:_status forKey:kCoderKeystatus];
-  [coder encodeObject:_created_at forKey:kCoderKeycreated_at];
-  [coder encodeObject:_updated_at forKey:kCoderKeyupdated_at];
-  [coder encodeObject:_name forKey:kCoderKeyname];
-  [coder encodeObject:_deleted_at forKey:kCoderKeydeleted_at];
+  [coder encodeInteger:_batchId forKey:kCoderKeyBatchId];
+  [coder encodeInteger:_documentId forKey:kCoderKeyDocumentId];
+  [coder encodeObject:_status forKey:kCoderKeyStatus];
+  [coder encodeObject:_createdAt forKey:kCoderKeyCreatedAt];
+  [coder encodeObject:_updatedAt forKey:kCoderKeyUpdatedAt];
+  [coder encodeObject:_name forKey:kCoderKeyName];
+  [coder encodeObject:_deletedAt forKey:kCoderKeyDeletedAt];
 }
 
 @end
 
-@implementation RKMutableBatchDocuments
+@interface RKBatchDocumentsConfiguration : NSObject <RKBatchDocumentsConfiguration>
 
-- (id)initWithImmutableObject:(RKBatchDocuments *)immutableObject
++ (instancetype)defaultConfiguration;
++ (instancetype)configurationWithObject:(RKBatchDocuments*)object;
+
+@property (nonatomic, readwrite, assign) NSInteger batchId;
+@property (nonatomic, readwrite, assign) NSInteger documentId;
+@property (nonatomic, readwrite, copy) NSString* status;
+@property (nonatomic, readwrite, assign) NSTimeInterval createdAt;
+@property (nonatomic, readwrite, assign) NSTimeInterval updatedAt;
+@property (nonatomic, readwrite, copy) NSString* name;
+@property (nonatomic, readwrite, assign) NSTimeInterval deletedAt;
+
+@end
+
+@implementation RKBatchDocumentsConfiguration
+
++ (instancetype)defaultConfiguration
 {
-  if ((self = [super init])) {
-    self.batch_id = immutableObject.batch_id;
-    self.document_id = immutableObject.document_id;
-    self.status = immutableObject.status;
-    self.created_at = immutableObject.created_at;
-    self.updated_at = immutableObject.updated_at;
-    self.name = immutableObject.name;
-    self.deleted_at = immutableObject.deleted_at;
-  }
-  return self;
+  return [[self alloc] init];
 }
 
-- (RKBatchDocuments *)makeImmutable;
++ (instancetype)configurationWithObject:(RKBatchDocuments*)object
 {
-  RKBatchDocuments* object = [[RKBatchDocuments alloc]
-    initWithBatch_id:_batch_id  
-    document_id:_document_id  
-    status:_status  
-    created_at:_created_at  
-    updated_at:_updated_at  
-    name:_name  
-    deleted_at:_deleted_at  
-  ];
-  return object;
+  RKBatchDocumentsConfiguration* config = [[self alloc] init];
+  config.batchId = object.batchId;
+  config.documentId = object.documentId;
+  config.status = object.status;
+  config.createdAt = object.createdAt;
+  config.updatedAt = object.updatedAt;
+  config.name = object.name;
+  config.deletedAt = object.deletedAt;
+  return config;
 }
 
 @end

@@ -1,39 +1,36 @@
-/// @generated @signature<<13f589c3d1a6354bc7c6062b18b5e48d>>
+/// @generated @signature<<508f181d851b0c6ca270b6f691fde89f>>
 
 #include <Foundation/Foundation.h>
 
-@class RKMutableBatches;
+@protocol RKBatchesConfiguration;
 
 @interface RKBatches : NSObject <NSCopying, NSCoding>
 
-+ (instancetype)build:(void(^)(RKMutableBatches *))block;
-+ (instancetype)buildWithObject:(RKBatches *)object block:(void(^)(RKMutableBatches *))block;
++ (instancetype)build:(void(^)(id<RKBatchesConfiguration>))block;
++ (instancetype)buildWithObject:(RKBatches *)object block:(void(^)(id<RKBatchesConfiguration>))block;
 
-@property (nonatomic, readonly, assign) NSInteger shipment_id;
-@property (nonatomic, readonly, copy) NSString* batch_type;
+@property (nonatomic, readonly, assign) NSInteger shipmentId;
+@property (nonatomic, readonly, copy) NSString* batchType;
 @property (nonatomic, readonly, assign) NSInteger quantity;
 @property (nonatomic, readonly, assign) NSInteger sort;
 @property (nonatomic, readonly, copy) NSString* status;
-@property (nonatomic, readonly, assign) NSTimeInterval created_at;
-@property (nonatomic, readonly, assign) NSTimeInterval updated_at;
-@property (nonatomic, readonly, assign) NSInteger custom_sort;
-@property (nonatomic, readonly, assign) NSTimeInterval deleted_at;
+@property (nonatomic, readonly, assign) NSTimeInterval createdAt;
+@property (nonatomic, readonly, assign) NSTimeInterval updatedAt;
+@property (nonatomic, readonly, assign) NSInteger customSort;
+@property (nonatomic, readonly, assign) NSTimeInterval deletedAt;
 
 @end
 
-@interface RKMutableBatches : NSObject
+@protocol RKBatchesConfiguration <NSObject>
 
-- (instancetype)initWithImmutableObject:(RKBatches *)immutableObject;
-- (RKBatches *)makeImmutable;
-
-@property (nonatomic, readwrite, assign) NSInteger shipment_id;
-@property (nonatomic, readwrite, copy) NSString* batch_type;
-@property (nonatomic, readwrite, assign) NSInteger quantity;
-@property (nonatomic, readwrite, assign) NSInteger sort;
-@property (nonatomic, readwrite, copy) NSString* status;
-@property (nonatomic, readwrite, assign) NSTimeInterval created_at;
-@property (nonatomic, readwrite, assign) NSTimeInterval updated_at;
-@property (nonatomic, readwrite, assign) NSInteger custom_sort;
-@property (nonatomic, readwrite, assign) NSTimeInterval deleted_at;
+- (void)setShipmentId:(NSInteger)shipmentId;
+- (void)setBatchType:(NSString*)batchType;
+- (void)setQuantity:(NSInteger)quantity;
+- (void)setSort:(NSInteger)sort;
+- (void)setStatus:(NSString*)status;
+- (void)setCreatedAt:(NSTimeInterval)createdAt;
+- (void)setUpdatedAt:(NSTimeInterval)updatedAt;
+- (void)setCustomSort:(NSInteger)customSort;
+- (void)setDeletedAt:(NSTimeInterval)deletedAt;
 
 @end

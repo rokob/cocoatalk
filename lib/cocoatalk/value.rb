@@ -35,17 +35,10 @@ module Cocoatalk
     end
 
     private
-      def names(prefix)
-        name = prefix + @name
-        mutableName = "#{prefix}Mutable#{@name}"
-        [name, mutableName]
-      end
-
       def value_as_hash(prefix, signature)
-        name, mutableName = names(prefix)
+        name = prefix + @name
         {
           name: name,
-          mutableName: mutableName,
           signature: signature,
           properties: @properties
         }

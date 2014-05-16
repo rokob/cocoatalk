@@ -2,26 +2,23 @@
 
 #include <Foundation/Foundation.h>
 
-@class <%= mutableName %>;
+@protocol <%= name %>Configuration;
 
 @interface <%= name %> : NSObject <NSCopying, NSCoding>
 
-+ (instancetype)build:(void(^)(<%= mutableName %> *))block;
-+ (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(<%= mutableName %> *))block;
++ (instancetype)build:(void(^)(id<<%= name %>Configuration>))block;
++ (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(id<<%= name %>Configuration>))block;
 
 <% properties.each do |property| -%>
-@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= snake2camel(property.name) %>;
 <% end -%>
 
 @end
 
-@interface <%= mutableName %> : NSObject
+@protocol <%= name %>Configuration <NSObject>
 
-- (instancetype)initWithImmutableObject:(<%= name %> *)immutableObject;
-- (<%= name %> *)makeImmutable;
-
-<% for property in properties -%>
-@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+<% properties.each do |property| -%>
+- (void)set<%= snake2camel(upcase_first(property.name)) %>:(<%= property.type %>)<%= snake2camel(property.name) %>;
 <% end -%>
 
 @end

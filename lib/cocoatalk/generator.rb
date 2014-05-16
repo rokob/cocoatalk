@@ -4,7 +4,7 @@ require_relative 'table'
 module Cocoatalk
   class Generator
     def self.version
-      "#{Table.version}::0.0.2"
+      "#{Table.version}::0.0.3"
     end
 
     def initialize(prefix="RK")
