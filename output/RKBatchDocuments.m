@@ -2,13 +2,13 @@
 
 #include "RKBatchDocuments.h"
 
-static NSString * const kCoderKeyBatchId = @"batch_id";
-static NSString * const kCoderKeyDocumentId = @"document_id";
+static NSString * const kCoderKeyBatchId = @"batchId";
+static NSString * const kCoderKeyDocumentId = @"documentId";
 static NSString * const kCoderKeyStatus = @"status";
-static NSString * const kCoderKeyCreatedAt = @"created_at";
-static NSString * const kCoderKeyUpdatedAt = @"updated_at";
+static NSString * const kCoderKeyCreatedAt = @"createdAt";
+static NSString * const kCoderKeyUpdatedAt = @"updatedAt";
 static NSString * const kCoderKeyName = @"name";
-static NSString * const kCoderKeyDeletedAt = @"deleted_at";
+static NSString * const kCoderKeyDeletedAt = @"deletedAt";
 
 @implementation RKBatchDocuments
 

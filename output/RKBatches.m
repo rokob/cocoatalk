@@ -2,15 +2,15 @@
 
 #include "RKBatches.h"
 
-static NSString * const kCoderKeyShipmentId = @"shipment_id";
-static NSString * const kCoderKeyBatchType = @"batch_type";
+static NSString * const kCoderKeyShipmentId = @"shipmentId";
+static NSString * const kCoderKeyBatchType = @"batchType";
 static NSString * const kCoderKeyQuantity = @"quantity";
 static NSString * const kCoderKeySort = @"sort";
 static NSString * const kCoderKeyStatus = @"status";
-static NSString * const kCoderKeyCreatedAt = @"created_at";
-static NSString * const kCoderKeyUpdatedAt = @"updated_at";
-static NSString * const kCoderKeyCustomSort = @"custom_sort";
-static NSString * const kCoderKeyDeletedAt = @"deleted_at";
+static NSString * const kCoderKeyCreatedAt = @"createdAt";
+static NSString * const kCoderKeyUpdatedAt = @"updatedAt";
+static NSString * const kCoderKeyCustomSort = @"customSort";
+static NSString * const kCoderKeyDeletedAt = @"deletedAt";
 
 @implementation RKBatches
 

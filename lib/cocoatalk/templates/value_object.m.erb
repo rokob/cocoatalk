@@ -3,23 +3,23 @@
 #include "<%= name %>.h"
 
 <% properties.each do |property| -%>
-static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %> = @"<%= property.name %>";
+static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= property.name %>";
 <% end -%>
 
 @implementation <%= name %>
 
 <% properties.each_with_index do |property, idx| -%>
 <% if idx == 0 -%>
-- (id)initWith<%= snake2camel(upcase_first(property.name)) %>:(<%= property.type %>)<%= snake2camel(property.name) %>
+- (id)initWith<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>
 <% else -%>
-    <%= snake2camel(property.name) %>:(<%= property.type %>)<%= snake2camel(property.name) %>
+    <%= property.name %>:(<%= property.type %>)<%= property.name %>
 <% end -%>
 <% end -%>
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-<% setter_string = property.memory == "copy" ? "[#{snake2camel(property.name)} copy]" : snake2camel(property.name) -%>
-    _<%= snake2camel(property.name) %> = <%= setter_string -%>;
+<% setter_string = property.memory == "copy" ? "[#{property.name} copy]" : property.name -%>
+    _<%= property.name %> = <%= setter_string -%>;
 <% end -%>
   }
   return self;
@@ -44,9 +44,9 @@ static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %>
   }
 <% properties.each_with_index do |property, idx| -%>
 <% if idx == 0 -%>
-  return [[self alloc] initWith<%= snake2camel(upcase_first(property.name)) %>:configuration.<%= snake2camel(property.name) %>
+  return [[self alloc] initWith<%= upcase_first(property.name) %>:configuration.<%= property.name %>
 <% else -%>
-    <%= snake2camel(property.name) %>:configuration.<%= snake2camel(property.name) %>
+    <%= property.name %>:configuration.<%= property.name %>
 <% end -%>
 <% end -%>
   ];
@@ -94,7 +94,7 @@ static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %>
 {
   if ((self = [super init])) {
 <% properties.each do |property| -%>
-    _<%= snake2camel(property.name) %> = [decoder decode<%= property.coder_type_string %>ForKey:kCoderKey<%= snake2camel(upcase_first(property.name)) %>];
+    _<%= property.name %> = [decoder decode<%= property.coder_type_string %>ForKey:kCoderKey<%= upcase_first(property.name) %>];
 <% end -%>
   }
   return self;
@@ -103,7 +103,7 @@ static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %>
 - (void)encodeWithCoder:(NSCoder *)coder
 {
 <% properties.each do |property| -%>
-  [coder encode<%= property.coder_type_string %>:_<%= snake2camel(property.name) %> forKey:kCoderKey<%= snake2camel(upcase_first(property.name)) %>];
+  [coder encode<%= property.coder_type_string %>:_<%= property.name %> forKey:kCoderKey<%= upcase_first(property.name) %>];
 <% end -%>
 }
 
@@ -115,7 +115,7 @@ static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %>
 + (instancetype)configurationWithObject:(<%= name %>*)object;
 
 <% properties.each do |property| -%>
-@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= snake2camel(property.name) %>;
+@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;
 <% end -%>
 
 @end
@@ -131,7 +131,7 @@ static NSString * const kCoderKey<%= snake2camel(upcase_first(property.name)) %>
 {
   <%= name %>Configuration* config = [[self alloc] init];
 <% properties.each do |property| -%>
-  config.<%= snake2camel(property.name) %> = object.<%= snake2camel(property.name) %>;
+  config.<%= property.name %> = object.<%= property.name %>;
 <% end -%>
   return config;
 }

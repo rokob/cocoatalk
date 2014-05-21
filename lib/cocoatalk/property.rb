@@ -7,7 +7,7 @@ module Cocoatalk
     attr_reader :name, :memory, :primative
 
     def initialize(name, memory, base_type, primative=false, indirection=nil)
-      @name = name
+      @name = snake2camel(name)
       @memory = memory
       @base_type = base_type
       @primative = primative
@@ -20,21 +20,21 @@ module Cocoatalk
 
     def equality_string(other)
       if @indirection == 0
-        "_#{snake2camel(@name)}==#{other}->_#{snake2camel(@name)}"
+        "_#{@name}==#{other}->_#{@name}"
       elsif @primative
-        "*_#{snake2camel(@name)}==*(#{other}->_#{snake2camel(@name)})"
+        "*_#{@name}==*(#{other}->_#{@name})"
       else
-        "(_#{snake2camel(@name)}==#{other}->_#{snake2camel(@name)} || [_#{snake2camel(@name)} isEqual:#{other}->_#{snake2camel(@name)}])"
+        "(_#{@name}==#{other}->_#{@name} || [_#{@name} isEqual:#{other}->_#{@name}])"
       end
     end
 
     def hash_string
       if @base_type.upcase == "BOOL" and @indirection == 0
-        "(_#{snake2camel(@name)} ? 1231 : 1237)"
+        "(_#{@name} ? 1231 : 1237)"
       elsif @primative
-        "(NSUInteger)(_#{snake2camel(@name)})"
+        "(NSUInteger)(_#{@name})"
       else
-        "[_#{snake2camel(@name)} hash]"
+        "[_#{@name} hash]"
       end
     end
 

@@ -10,7 +10,7 @@
 + (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(id<<%= name %>Configuration>))block;
 
 <% properties.each do |property| -%>
-@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= snake2camel(property.name) %>;
+@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;
 <% end -%>
 
 @end
@@ -18,7 +18,7 @@
 @protocol <%= name %>Configuration <NSObject>
 
 <% properties.each do |property| -%>
-- (void)set<%= snake2camel(upcase_first(property.name)) %>:(<%= property.type %>)<%= snake2camel(property.name) %>;
+- (void)set<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>;
 <% end -%>
 
 @end
