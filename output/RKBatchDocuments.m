@@ -1,4 +1,4 @@
-/// @generated @signature<<508f181d851b0c6ca270b6f691fde89f>>
+/// @generated @signature<<791eabad6377a77bcbbb39abc0f3e5de>>
 
 #include "RKBatchDocuments.h"
 

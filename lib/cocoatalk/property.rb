@@ -6,12 +6,21 @@ module Cocoatalk
 
     attr_reader :name, :memory, :primative
 
-    def initialize(name, memory, base_type, primative=false, indirection=nil)
+    def initialize(name, memory, base_type, options={})
+      default_options = {
+        primative: false,
+        indirection: nil,
+        collection: false,
+        value_type: nil
+      }
+      options = default_options.merge options
       @name = snake2camel(name)
       @memory = memory
       @base_type = base_type
-      @primative = primative
-      @indirection = indirection || (primative ? 0 : 1)
+      @primative = options[:primative]
+      @indirection = options[:indirection] || (options[:primative] ? 0 : 1)
+      @collection = options[:collection]
+      @value_type = options[:value_type]
     end
 
     def type

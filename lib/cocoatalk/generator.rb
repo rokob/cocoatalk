@@ -13,7 +13,7 @@ module Cocoatalk
     end
 
     def create_table(name, options={})
-      table = Table.new(name)
+      table = Table.new(name, options)
       yield table
       @tables << table
     end
