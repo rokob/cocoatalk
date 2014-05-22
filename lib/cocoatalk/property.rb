@@ -1,10 +1,9 @@
-require_relative 'execution_helpers'
-
 module Cocoatalk
   class Property
-    include ExecutionHelpers
 
     attr_reader :name, :memory, :primative
+
+    BUILTIN = %w{ NSInteger NSUInteger NSString NSTimeInterval NSDate BOOL CGFloat NSArray NSDictionary }
 
     def initialize(name, memory, base_type, options={})
       default_options = {
@@ -14,9 +13,10 @@ module Cocoatalk
         value_type: nil
       }
       options = default_options.merge options
-      @name = snake2camel(name)
+      @name = name
       @memory = memory
       @base_type = base_type
+      @builtin = BUILTIN.include?(base_type)
       @primative = options[:primative]
       @indirection = options[:indirection] || (options[:primative] ? 0 : 1)
       @collection = options[:collection]
