@@ -47,10 +47,6 @@ module Cocoatalk
       end
     end
 
-    def primative
-      @indirection == 0
-    end
-
     def coder_type_string
       return "Object" unless @primative
       case @base_type
@@ -64,5 +60,23 @@ module Cocoatalk
         "Object" # this shouldn't happen
       end
     end
+
+    def json_key
+      camel_to_snake(@name)
+    end
+
+    private
+      def camel_to_snake(str)
+        parts = [""]
+        str.each_char do |c|
+          if c > 'Z' # if lowercase
+            parts[-1] << c
+          else
+            parts << c
+          end
+        end
+        parts.reject!(&:empty?) # in case the first char was capital
+        parts.map(&:downcase).join("_")
+      end
   end
 end

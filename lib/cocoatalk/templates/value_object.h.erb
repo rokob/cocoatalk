@@ -8,6 +8,7 @@
 
 + (instancetype)build:(void(^)(id<<%= name %>Configuration>))block;
 + (instancetype)buildWithObject:(<%= name %> *)object block:(void(^)(id<<%= name %>Configuration>))block;
++ (instancetype)buildWithDictionary:(NSDictionary *)dictionary;
 
 <% properties.each do |property| -%>
 @property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;
