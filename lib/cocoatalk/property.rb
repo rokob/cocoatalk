@@ -1,7 +1,9 @@
+require_relative 'types'
+
 module Cocoatalk
   class Property
 
-    attr_reader :name, :memory, :primative
+    attr_reader :name, :memory, :primative, :collection
 
     BUILTIN = %w{ NSInteger NSUInteger NSString NSTimeInterval NSDate BOOL CGFloat NSArray NSDictionary }
 
@@ -10,7 +12,8 @@ module Cocoatalk
         primative: false,
         indirection: nil,
         collection: false,
-        value_type: nil
+        value_type: nil,
+        json_key: camel_to_snake(name)
       }
       options = default_options.merge options
       @name = name
@@ -20,7 +23,9 @@ module Cocoatalk
       @primative = options[:primative]
       @indirection = options[:indirection] || (options[:primative] ? 0 : 1)
       @collection = options[:collection]
+      @collection_type = (base_type == 'NSArray' ? :array : :dictionary) if @collection
       @value_type = options[:value_type]
+      @json_key = options[:json_key]
     end
 
     def type
@@ -41,28 +46,51 @@ module Cocoatalk
       if @base_type.upcase == "BOOL" and @indirection == 0
         "(_#{@name} ? 1231 : 1237)"
       elsif @primative
-        "(NSUInteger)(_#{@name})"
+        "(NSUInteger)(113*_#{@name})"
       else
         "[_#{@name} hash]"
       end
     end
 
     def coder_type_string
-      return "Object" unless @primative
-      case @base_type
-      when "NSInteger"
-        "Integer"
-      when "BOOL"
-        "Bool"
-      when "CGFloat"
-        "Float"
-      else
-        "Object" # this shouldn't happen
-      end
+      (!@primative && 'Object') || Types::NS_TO_PRIMATIVE[@base_type] || 'Object'
     end
 
-    def json_key
-      camel_to_snake(@name)
+    def from_dictionary(dict_str)
+      return "[temporaryCollection__ copy]" if @collection and !BUILTIN.include?(@value_type)
+
+      value = "[#{dict_str} objectForKey:@\"#{@json_key}\"]"
+      return value unless @primative
+
+      number_type = coder_type_string.downcase + "Value"
+      "[#{value} #{number_type}]"
+    end
+
+    def collection_from_dictionary(dict_str)
+      @collection_type == :array ? from_dictionary_array(dict_str) : from_dictionary_dictionary(dict_str)
+    end
+
+    def from_dictionary_array(dict_str)
+      return "" if BUILTIN.include?(@value_type)
+
+      result =  "NSMutableArray *temporaryCollection__ = [NSMutableArray array];\n"
+      result << "for (id objInArray in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
+      result << "  #{@value_type} constructedObject = [#{@value_type} buildWithDictionary:objInArray];\n"
+      result << "  [temporaryCollection__ addObject:constructedObject];\n"
+      result << "}\n"
+      result
+    end
+
+    def from_dictionary_dictionary(dict_str)
+      return "" if BUILTIN.include?(@value_type)
+
+      result =  "NSMutableDictionary *temporaryCollection__ = [NSMutableDictionary dictionary];\n"
+      result << "for (id<NSCopying> keyInDict in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
+      result << "  id valueForKeyInDict = [[#{dict_str} objectForKey:@\"#{@json_key}\"] objectForKey:keyInDict];"
+      result << "  #{@value_type} constructedObject = [#{@value_type} buildWithDictionary:valueForKeyInDict];\n"
+      result << "  [temporaryCollection__ setObject:constructedObject forKey:keyInDict];\n"
+      result << "}\n"
+      result
     end
 
     private

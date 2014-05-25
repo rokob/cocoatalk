@@ -1,5 +1,6 @@
-require_relative 'value'
 require_relative 'property'
+require_relative 'types'
+require_relative 'value'
 
 module Cocoatalk
   class Table
@@ -15,47 +16,54 @@ module Cocoatalk
     end
 
     def integer(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "assign", "NSInteger", primative: true))
+      options = {primative: true}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
     end
 
     def string(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", "NSString"))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
     def datetime(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "assign", "NSTimeInterval", primative: true))
+      options = {primative: true}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
     end
 
     def date(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "strong", "NSDate"))
+      @value.add_property(Property.new(snake_to_camel(name), "strong", Types::DSL_TO_NS[__method__], options))
     end
 
     def boolean(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "assign", "BOOL", primative: true))
+      options = {primative: true}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
     end
 
     def text(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", "NSString"))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
     def decimal(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "assign", "CGFloat", primative: true))
+      options = {primative: true}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
     end
 
     def array(name, value_type, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", "NSArray", collection: true, value_type: value_type))
+      options = {collection: true, value_type: value_type}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
     def dictionary(name, value_type, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", "NSDictionary", collection: true, value_type: value_type))
+      options = {collection: true, value_type: value_type}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
     def object(name, type, copying=true, options={})
-      @value.add_property(Property.new(snake_to_camel(name), copying ? "copy" : "strong", type))
+      @value.add_property(Property.new(snake_to_camel(name), copying ? "copy" : "strong", type, options))
     end
 
     def enum(name, type, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "assign", type, primative: true))
+      options = {primative: true}.merge options
+      @value.add_property(Property.new(snake_to_camel(name), "assign", type, options))
     end
 
     def build(prefix, signature)

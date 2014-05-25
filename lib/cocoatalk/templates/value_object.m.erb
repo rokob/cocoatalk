@@ -57,7 +57,10 @@ static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= prop
   id<<%= name %>Configuration> configuration = [<%= name %>Configuration defaultConfiguration];
   return [self buildWithConfiguration:configuration block:^(id<<%= name %>Configuration> config){
 <% properties.each do |property| -%>
-    [config set<%= upcase_first(property.name) %>:[dictionary objectForKey:@"<%= property.json_key %>"]];
+<% if property.collection -%>
+     <%= property.collection_from_dictionary('dictionary') %>
+<% end -%>
+    [config set<%= upcase_first(property.name) %>:<%= property.from_dictionary('dictionary') %>];
 <% end -%>
   }];
 }
