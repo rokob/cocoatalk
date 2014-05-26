@@ -1,6 +1,10 @@
 <%= signature %>
 
-#include "<%= name %>.h"
+#import "<%= name %>.h"
+<% headers = properties.map { |property| property.import_string(prefix) }.compact.uniq -%>
+<% headers.each do |header_string| -%>
+<%= header_string %>
+<% end -%>
 
 <% properties.each do |property| -%>
 static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= property.name %>";
@@ -10,9 +14,9 @@ static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= prop
 
 <% properties.each_with_index do |property, idx| -%>
 <% if idx == 0 -%>
-- (id)initWith<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>
+- (id)initWith<%= upcase_first(property.name) %>:(<%= property.type(prefix) %>)<%= property.name %>
 <% else -%>
-    <%= property.name %>:(<%= property.type %>)<%= property.name %>
+    <%= property.name %>:(<%= property.type(prefix) %>)<%= property.name %>
 <% end -%>
 <% end -%>
 {
@@ -58,9 +62,9 @@ static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= prop
   return [self buildWithConfiguration:configuration block:^(id<<%= name %>Configuration> config){
 <% properties.each do |property| -%>
 <% if property.collection -%>
-     <%= property.collection_from_dictionary('dictionary') %>
+<%= property.collection_from_dictionary('dictionary', prefix) %>
 <% end -%>
-    [config set<%= upcase_first(property.name) %>:<%= property.from_dictionary('dictionary') %>];
+    [config set<%= upcase_first(property.name) %>:<%= property.from_dictionary('dictionary', prefix) %>];
 <% end -%>
   }];
 }
@@ -128,7 +132,7 @@ static NSString * const kCoderKey<%= upcase_first(property.name) %> = @"<%= prop
 + (instancetype)configurationWithObject:(<%= name %>*)object;
 
 <% properties.each do |property| -%>
-@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+@property (nonatomic, readwrite, <%= property.memory %>) <%= property.type(prefix) %> <%= property.name %>;
 <% end -%>
 
 @end

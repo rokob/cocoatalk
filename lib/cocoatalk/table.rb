@@ -8,11 +8,13 @@ module Cocoatalk
       "#{Value.version}::0.0.3"
     end
 
-    def initialize(name, options={})
+    def initialize(name, type_store, options={})
       generic_singular = name_to_singular(name)
       options = {singular: generic_singular}.merge options
       @name = snake_to_camel(options[:singular], true)
       @value = Value.new(@name)
+      @type_store = type_store
+      @type_store.set options[:singular], @name
     end
 
     def integer(name, options={})
@@ -48,21 +50,24 @@ module Cocoatalk
     end
 
     def array(name, value_type, options={})
-      options = {collection: true, value_type: value_type}.merge options
+      options = {collection: true, value_type: value_type, type_store: @type_store}.merge options
       @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
     def dictionary(name, value_type, options={})
-      options = {collection: true, value_type: value_type}.merge options
+      options = {collection: true, value_type: value_type, type_store: @type_store}.merge options
       @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
     end
 
-    def object(name, type, copying=true, options={})
-      @value.add_property(Property.new(snake_to_camel(name), copying ? "copy" : "strong", type, options))
+    def object(name, type, options={})
+      options = {copying: true, type_store: @type_store}.merge options
+      copying = options[:copying]
+      property = Property.new(snake_to_camel(name), copying ? "copy" : "strong", type, options)
+      @value.add_property(property)
     end
 
     def enum(name, type, options={})
-      options = {primative: true}.merge options
+      options = {primative: true, type_store: @type_store}.merge options
       @value.add_property(Property.new(snake_to_camel(name), "assign", type, options))
     end
 

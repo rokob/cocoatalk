@@ -23,4 +23,6 @@ create_table "batches", :force => true do |t|
   t.datetime "updated_at",                         :null => false
   t.integer  "custom_sort"
   t.datetime "deleted_at"
+  t.object   "stinky", "batch_document", json_key: "stinky_document"
+  t.array    "mucho_stinky", "batch_document", json_key: "many_stinks"
 end

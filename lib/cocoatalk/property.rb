@@ -3,7 +3,7 @@ require_relative 'types'
 module Cocoatalk
   class Property
 
-    attr_reader :name, :memory, :primative, :collection
+    attr_reader :name, :memory, :primative, :builtin, :collection
 
     BUILTIN = %w{ NSInteger NSUInteger NSString NSTimeInterval NSDate BOOL CGFloat NSArray NSDictionary }
 
@@ -13,7 +13,8 @@ module Cocoatalk
         indirection: nil,
         collection: false,
         value_type: nil,
-        json_key: camel_to_snake(name)
+        json_key: camel_to_snake(name),
+        type_store: nil
       }
       options = default_options.merge options
       @name = name
@@ -26,10 +27,30 @@ module Cocoatalk
       @collection_type = (base_type == 'NSArray' ? :array : :dictionary) if @collection
       @value_type = options[:value_type]
       @json_key = options[:json_key]
+      @type_store = options[:type_store]
     end
 
-    def type
-      "#{@base_type}" + "*"*@indirection
+    def type(prefix)
+      type = @builtin ? @base_type : outside_type(prefix)
+      "#{type}" + "*"*@indirection
+    end
+
+    def outside_type(prefix, type=nil)
+      type ||= @base_type
+      prefix + @type_store.get(type)
+    end
+
+    def extra_header_string(prefix)
+      return nil if @primative || (@builtin && !@collection)
+      inner_type = @collection ? @value_type : @base_type
+      return "#import \"#{outside_type(prefix, inner_type)}.h\"" if @primative
+      return "@class #{outside_type(prefix, inner_type)};"
+    end
+
+    def import_string(prefix)
+      return nil if @primative || (@builtin && !@collection)
+      inner_type = @collection ? @value_type : @base_type
+      return "#import \"#{outside_type(prefix, inner_type)}.h\""
     end
 
     def equality_string(other)
@@ -56,41 +77,52 @@ module Cocoatalk
       (!@primative && 'Object') || Types::NS_TO_PRIMATIVE[@base_type] || 'Object'
     end
 
-    def from_dictionary(dict_str)
-      return "[temporaryCollection__ copy]" if @collection and !BUILTIN.include?(@value_type)
+    def from_dictionary(dict_str, prefix)
+      return "[#{collection_name_for_value} copy]" if @collection and !BUILTIN.include?(@value_type)
 
       value = "[#{dict_str} objectForKey:@\"#{@json_key}\"]"
-      return value unless @primative
+      if @builtin
+        return value unless @primative
 
-      number_type = coder_type_string.downcase + "Value"
-      "[#{value} #{number_type}]"
+        number_type = coder_type_string.downcase + "Value"
+        return "[#{value} #{number_type}]"
+      else
+        type = prefix + @type_store.get(@base_type)
+        return "[#{type} buildWithDictionary:#{value}]"
+      end
     end
 
-    def collection_from_dictionary(dict_str)
-      @collection_type == :array ? from_dictionary_array(dict_str) : from_dictionary_dictionary(dict_str)
+    def collection_from_dictionary(dict_str, prefix)
+      @collection_type == :array ? from_dictionary_array(dict_str, prefix) : from_dictionary_dictionary(dict_str, prefix)
     end
 
-    def from_dictionary_array(dict_str)
+    def from_dictionary_array(dict_str, prefix)
       return "" if BUILTIN.include?(@value_type)
 
-      result =  "NSMutableArray *temporaryCollection__ = [NSMutableArray array];\n"
-      result << "for (id objInArray in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
-      result << "  #{@value_type} constructedObject = [#{@value_type} buildWithDictionary:objInArray];\n"
-      result << "  [temporaryCollection__ addObject:constructedObject];\n"
-      result << "}\n"
+      value_type = outside_type(prefix, @value_type)
+      result =  "    NSMutableArray *#{collection_name_for_value} = [NSMutableArray array];\n"
+      result << "    for (id objInArray in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
+      result << "      #{value_type}* constructedObject = [#{value_type} buildWithDictionary:objInArray];\n"
+      result << "      [#{collection_name_for_value} addObject:constructedObject];\n"
+      result << "    }"
       result
     end
 
-    def from_dictionary_dictionary(dict_str)
+    def from_dictionary_dictionary(dict_str, prefix)
       return "" if BUILTIN.include?(@value_type)
 
-      result =  "NSMutableDictionary *temporaryCollection__ = [NSMutableDictionary dictionary];\n"
-      result << "for (id<NSCopying> keyInDict in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
-      result << "  id valueForKeyInDict = [[#{dict_str} objectForKey:@\"#{@json_key}\"] objectForKey:keyInDict];"
-      result << "  #{@value_type} constructedObject = [#{@value_type} buildWithDictionary:valueForKeyInDict];\n"
-      result << "  [temporaryCollection__ setObject:constructedObject forKey:keyInDict];\n"
-      result << "}\n"
+      value_type = outside_type(prefix, @value_type)
+      result =  "NSMutableDictionary *#{collection_name_for_value} = [NSMutableDictionary dictionary];\n"
+      result << "    for (id<NSCopying> keyInDict in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
+      result << "      id valueForKeyInDict = [[#{dict_str} objectForKey:@\"#{@json_key}\"] objectForKey:keyInDict];"
+      result << "      #{value_type}* constructedObject = [#{value_type} buildWithDictionary:valueForKeyInDict];\n"
+      result << "      [#{collection_name_for_value} setObject:constructedObject forKey:keyInDict];\n"
+      result << "    }\n"
       result
+    end
+
+    def collection_name_for_value
+      "temporaryCollection__#{@value_type}"
     end
 
     private

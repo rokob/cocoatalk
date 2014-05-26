@@ -40,7 +40,8 @@ module Cocoatalk
         {
           name: name,
           signature: signature,
-          properties: @properties
+          properties: @properties,
+          prefix: prefix
         }
       end
   end

@@ -1,5 +1,6 @@
 require_relative 'code_sign'
 require_relative 'table'
+require_relative 'types'
 
 module Cocoatalk
   class Generator
@@ -10,10 +11,11 @@ module Cocoatalk
     def initialize(prefix="RK")
       @prefix = prefix
       @tables = []
+      @type_store = TypeStore.new
     end
 
     def create_table(name, options={})
-      table = Table.new(name, options)
+      table = Table.new(name, @type_store, options)
       yield table
       @tables << table
     end

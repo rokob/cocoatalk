@@ -1,7 +1,11 @@
 <%= signature %>
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
+<% headers = properties.map { |property| property.extra_header_string(prefix) }.compact.uniq -%>
+<% headers.each do |header_string| -%>
+<%= header_string %>
+<% end -%>
 @protocol <%= name %>Configuration;
 
 @interface <%= name %> : NSObject <NSCopying, NSCoding>
@@ -11,7 +15,7 @@
 + (instancetype)buildWithDictionary:(NSDictionary *)dictionary;
 
 <% properties.each do |property| -%>
-@property (nonatomic, readonly, <%= property.memory %>) <%= property.type %> <%= property.name %>;
+@property (nonatomic, readonly, <%= property.memory %>) <%= property.type(prefix) %> <%= property.name %>;
 <% end -%>
 
 @end
@@ -19,7 +23,7 @@
 @protocol <%= name %>Configuration <NSObject>
 
 <% properties.each do |property| -%>
-- (void)set<%= upcase_first(property.name) %>:(<%= property.type %>)<%= property.name %>;
+- (void)set<%= upcase_first(property.name) %>:(<%= property.type(prefix) %>)<%= property.name %>;
 <% end -%>
 
 @end
