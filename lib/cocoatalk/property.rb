@@ -112,7 +112,7 @@ module Cocoatalk
       return "" if BUILTIN.include?(@value_type)
 
       value_type = outside_type(prefix, @value_type)
-      result =  "NSMutableDictionary *#{collection_name_for_value} = [NSMutableDictionary dictionary];\n"
+      result =  "    NSMutableDictionary *#{collection_name_for_value} = [NSMutableDictionary dictionary];\n"
       result << "    for (id<NSCopying> keyInDict in [#{dict_str} objectForKey:@\"#{@json_key}\"]) {\n"
       result << "      id valueForKeyInDict = [[#{dict_str} objectForKey:@\"#{@json_key}\"] objectForKey:keyInDict];"
       result << "      #{value_type}* constructedObject = [#{value_type} buildWithDictionary:valueForKeyInDict];\n"
@@ -125,18 +125,17 @@ module Cocoatalk
       "temporaryCollection__#{@value_type}"
     end
 
-    private
-      def camel_to_snake(str)
-        parts = [""]
-        str.each_char do |c|
-          if c > 'Z' # if lowercase
-            parts[-1] << c
-          else
-            parts << c
-          end
+    def camel_to_snake(str)
+      parts = [""]
+      str.each_char do |c|
+        if c > 'Z' or c < 'A'
+          parts[-1] << c
+        else
+          parts << c
         end
-        parts.reject!(&:empty?) # in case the first char was capital
-        parts.map(&:downcase).join("_")
       end
+      parts.reject!(&:empty?) # in case the first char was capital
+      parts.map(&:downcase).join("_")
+    end
   end
 end

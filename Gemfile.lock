@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoatalk (0.0.1)
+    cocoatalk (0.0.3)
 
 GEM
   remote: https://rubygems.org/
