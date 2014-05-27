@@ -1,21 +1,27 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'cocoatalk'
 require 'optparse'
 
 options = {output: "output"}
-OptionParser.new do |opts|
+parser = OptionParser.new do |opts|
   opts.banner = "Usage: run.rb input-file [options]"
 
   opts.on("-o", "--output-dir DIR", "Specify output directory") do |v|
     options[:output] = v
   end
-end.parse!
+end
+
+parser.parse!
 
 options[:input] = ARGV.first
 
 unless options[:input]
-  exit
+  $stderr.puts "Error: you must specify an input file"
+  $stderr.puts parser.banner
+  parser.summarize $stderr
+  exit 1
 end
 
 puts "Generating models with schema: #{options[:input]}"
