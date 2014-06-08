@@ -4,12 +4,23 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'cocoatalk'
 require 'optparse'
 
-options = {output: "output"}
+options = {output: "output", language: "objc", prefix: "RK"}
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: run.rb input-file [options]"
 
   opts.on("-o", "--output-dir DIR", "Specify output directory") do |v|
     options[:output] = v
+  end
+
+  opts.on("-l", "--language <swift,objc>", "Specify the output language") do |v|
+    options[:language] = v.downcase
+    unless Cocoatalk::Types::Language::ALL.include?(options[:language])
+      options[:language] = "objc"
+    end
+  end
+
+  opts.on("-p", "--prefix", "Speficy the class prefix (e.g. NS)") do |v|
+    options[:prefix] = v
   end
 end
 
@@ -25,4 +36,4 @@ unless options[:input]
 end
 
 puts "Generating models with schema: #{options[:input]}"
-Cocoatalk::Generator.new.generate(options)
+Cocoatalk::Generator.new(options[:prefix], options[:language]).generate(options)

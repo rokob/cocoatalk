@@ -1,0 +1,14 @@
+<%= signature %>
+
+struct <%= name %> {
+<% properties.each do |property| -%>
+  let <%= property.swift_name %>: <%= property.swift_type(prefix) %>
+<% end -%>
+
+  static func fromJSON(dict: Dictionary<String, AnyObject!>) -> <%= name %> {
+    return <%= name %>(
+<% types = properties.map { |p| "#{p.swift_name}: #{p.from_swift_dictionary('dict', prefix)}! as #{p.swift_type(prefix)}" } -%>
+      <%= types.join(",\n      ") %>
+    )
+  }
+}

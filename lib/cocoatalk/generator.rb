@@ -8,13 +8,15 @@ module Cocoatalk
       "#{Table.version}::0.0.3"
     end
 
-    def initialize(prefix="RK")
+    def initialize(prefix="RK", language="objc")
       @prefix = prefix
+      @language = language
       @tables = []
       @type_store = TypeStore.new
     end
 
     def create_table(name, options={})
+      options = {language: @language}.merge options
       table = Table.new(name, @type_store, options)
       yield table
       @tables << table
@@ -30,17 +32,21 @@ module Cocoatalk
           signer.add_content(lines)
         end
         instance_eval(lines)
-        run_generator(options[:output])
+        run_generator(options[:output], options[:language] || Types::Language::OBJC)
       end
     end
 
     private
-      def run_generator(output)
+      def run_generator(output, language)
         @tables.each do |t|
           t.build @prefix, @signer.signature
           base_filename = "#{output}/#{t.name(@prefix)}"
-          create_file(base_filename, ".h") { t.interface }
-          create_file(base_filename, ".m") { t.implementation }
+          if language == Types::Language::OBJC
+            create_file(base_filename, ".h") { t.interface }
+            create_file(base_filename, ".m") { t.implementation }
+          else
+            create_file(base_filename, ".swift") { t.swifty }
+          end
         end
       end
 

@@ -3,7 +3,7 @@ require_relative 'execution_context'
 
 module Cocoatalk
   class Value
-    attr_reader :interface, :implementation
+    attr_reader :interface, :implementation, :swifty
 
     def self.version
       '0.0.2'
@@ -27,6 +27,7 @@ module Cocoatalk
       context = ExecutionContext.new(hash).get_binding
       @interface = result('templates/value_object.h.erb', context)
       @implementation = result('templates/value_object.m.erb', context)
+      @swifty = result('templates/value_object.swift.erb', context)
     end
 
     def result(filepath, context)

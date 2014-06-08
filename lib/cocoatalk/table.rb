@@ -10,53 +10,55 @@ module Cocoatalk
 
     def initialize(name, type_store, options={})
       generic_singular = name_to_singular(name)
-      options = {singular: generic_singular}.merge options
+      options = {singular: generic_singular, language: Types::Language::OBJC}.merge options
       @name = snake_to_camel(options[:singular], true)
       @value = Value.new(@name)
       @type_store = type_store
       @type_store.set options[:singular], @name
+      @language = options[:language]
+      @type_map = @language == Types::Language::OBJC ? Types::DSL_TO_NS : Types::DSL_TO_SWIFT
     end
 
     def integer(name, options={})
       options = {primative: true}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "assign", @type_map[__method__], options))
     end
 
     def string(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", @type_map[__method__], options))
     end
 
     def datetime(name, options={})
       options = {primative: true}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "assign", @type_map[__method__], options))
     end
 
     def date(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "strong", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "strong", @type_map[__method__], options))
     end
 
     def boolean(name, options={})
       options = {primative: true}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "assign", @type_map[__method__], options))
     end
 
     def text(name, options={})
-      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", @type_map[__method__], options))
     end
 
     def decimal(name, options={})
       options = {primative: true}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "assign", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "assign", @type_map[__method__], options))
     end
 
     def array(name, value_type, options={})
       options = {collection: true, value_type: value_type, type_store: @type_store}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", @type_map[__method__], options))
     end
 
     def dictionary(name, value_type, options={})
       options = {collection: true, value_type: value_type, type_store: @type_store}.merge options
-      @value.add_property(Property.new(snake_to_camel(name), "copy", Types::DSL_TO_NS[__method__], options))
+      @value.add_property(Property.new(snake_to_camel(name), "copy", @type_map[__method__], options))
     end
 
     def object(name, type, options={})
@@ -81,6 +83,10 @@ module Cocoatalk
 
     def implementation
       @value.implementation
+    end
+
+    def swifty
+      @value.swifty
     end
 
     def name(prefix)

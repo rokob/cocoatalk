@@ -6,6 +6,7 @@ module Cocoatalk
     attr_reader :name, :memory, :primative, :builtin, :collection
 
     BUILTIN = %w{ NSInteger NSUInteger NSString NSTimeInterval NSDate BOOL CGFloat NSArray NSDictionary }
+    SWIFT_BUILTIN = %w{ Int UInt String Double Float Bool Array Dictionary }
 
     def initialize(name, memory, base_type, options={})
       default_options = {
@@ -20,19 +21,28 @@ module Cocoatalk
       @name = name
       @memory = memory
       @base_type = base_type
-      @builtin = BUILTIN.include?(base_type)
+      @builtin = BUILTIN.include?(base_type) || SWIFT_BUILTIN.include?(base_type)
       @primative = options[:primative]
       @indirection = options[:indirection] || (options[:primative] ? 0 : 1)
       @collection = options[:collection]
       @collection_type = (base_type == 'NSArray' ? :array : :dictionary) if @collection
+      @swift_collection_type = (base_type == 'Array' ? :array : :dictionary) if @collection
       @value_type = options[:value_type]
       @json_key = options[:json_key]
       @type_store = options[:type_store]
     end
 
+    def swift_name
+      camel_to_snake(name)
+    end
+
     def type(prefix)
       type = @builtin ? @base_type : outside_type(prefix)
       "#{type}" + "*"*@indirection
+    end
+
+    def swift_type(prefix)
+      return @builtin ? @base_type : outside_type(prefix)
     end
 
     def outside_type(prefix, type=nil)
@@ -90,6 +100,10 @@ module Cocoatalk
         type = prefix + @type_store.get(@base_type)
         return "[#{type} buildWithDictionary:#{value}]"
       end
+    end
+
+    def from_swift_dictionary(dict_str, prefix)
+      return "#{dict_str}[\"#{@json_key}\"]"
     end
 
     def collection_from_dictionary(dict_str, prefix)
